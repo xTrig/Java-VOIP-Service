@@ -1,4 +1,7 @@
+import client.MainGUI;
 import server.VOIPServer;
+
+import javax.swing.*;
 
 public class Main {
 
@@ -28,5 +31,14 @@ public class Main {
 
         //Otherwise start the client
         System.out.println("Client starting...");
+
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception exc) {
+            exc.printStackTrace();
+        }
+
+        MainGUI gui = new MainGUI();
+        gui.setVisible(true);
     }
 }
