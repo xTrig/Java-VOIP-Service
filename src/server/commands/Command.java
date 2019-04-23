@@ -1,8 +1,8 @@
-package commands;
+package server.commands;
 
 /***
  * @author Steven
- * Interface for all commands to implement
+ * Interface for all server.commands to implement
  */
 public interface Command {
 

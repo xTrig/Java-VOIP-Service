@@ -1,7 +1,7 @@
 package server;
 
-import commands.AbstractCommand;
-import commands.CommandResolver;
+import server.commands.AbstractCommand;
+import server.commands.CommandResolver;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

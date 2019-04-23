@@ -1,6 +1,6 @@
 package server;
 
-import commands.AbstractCommand;
+import server.commands.AbstractCommand;
 
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /***
  * @author Steven
  *
- * Main VOIPServer class to handle all connections and commands
+ * Main VOIPServer class to handle all connections and server.commands
  */
 public class VOIPServer {
 

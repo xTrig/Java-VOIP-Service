@@ -1,10 +1,10 @@
-package commands;
+package server.commands;
 
 import server.Client;
 
 /***
  * @author Steven
- * Abstract class to define commands
+ * Abstract class to define server.commands
  */
 public abstract class AbstractCommand implements Command {
 

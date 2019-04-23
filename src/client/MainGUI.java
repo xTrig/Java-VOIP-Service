@@ -13,7 +13,7 @@ public class MainGUI extends JFrame {
     private JButton connectButton;
 
     private void createUIComponents() {
-        
+
     }
 
     public MainGUI() {
