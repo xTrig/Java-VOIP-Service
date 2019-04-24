@@ -1,6 +1,6 @@
-package server.commands;
+package com.trig.voip.server.commands;
 
-import server.Client;
+import com.trig.voip.server.Client;
 
 /***
  * @author Steven

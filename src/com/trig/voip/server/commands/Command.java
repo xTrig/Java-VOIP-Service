@@ -1,8 +1,8 @@
-package server.commands;
+package com.trig.voip.server.commands;
 
 /***
  * @author Steven
- * Interface for all server.commands to implement
+ * Interface for all commands to implement
  */
 public interface Command {
 

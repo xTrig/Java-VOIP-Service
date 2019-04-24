@@ -1,6 +1,6 @@
-package server.commands;
+package com.trig.voip.server.commands;
 
-import server.Client;
+import com.trig.voip.server.Client;
 
 /***
  * @author Steven
@@ -26,6 +26,8 @@ public class CommandResolver {
         switch(cmdPrefix) { //Construct command objects
             case "01":
                 return new HelloCommand(client, data);
+            case "02":
+                return new SoundCommand(client, data);
             default:
                 return new InvalidCommand(client, cmdPrefix + " " + data);
         }

@@ -1,12 +1,9 @@
-package server;
+package com.trig.voip.server;
 
-import server.commands.AbstractCommand;
-import server.commands.CommandResolver;
+import com.trig.voip.server.commands.AbstractCommand;
+import com.trig.voip.server.commands.CommandResolver;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.Socket;
 
 public class Client {
@@ -36,6 +33,7 @@ public class Client {
      * @param socket The socket that this client connected with
      */
     public Client(Socket socket) {
+
         this(socket, "Unknown");
     }
 
@@ -44,7 +42,16 @@ public class Client {
      * @param data The data to be sent
      */
     public void sendMessage(String data) {
+
         sender.sendMessage(data);
+    }
+
+    /***
+     * Sends a raw byte[] to the client
+     * @param data The data to be sent
+     */
+    public void sendRaw(byte[] data) {
+        sender.sendRaw(data);
     }
 
     /***
@@ -60,6 +67,7 @@ public class Client {
      * @return The name of this Client, or "Unknown" if not set with the HelloCommand
      */
     public String getName() {
+
         return name;
     }
 
@@ -68,6 +76,7 @@ public class Client {
      * @param name Sets the name for this client
      */
     public void setName(String name) {
+
         this.name = name;
     }
 
@@ -76,6 +85,7 @@ public class Client {
      * @return This Client's IP address : PORT
      */
     public String getConnectionInfo() {
+
         return socket.getInetAddress().getHostAddress() + ":" + socket.getPort();
     }
 
@@ -84,6 +94,7 @@ public class Client {
      * @return This client's name, along with getConnectionInfo()
      */
     public String toString() {
+
         return name + "@" + getConnectionInfo();
     }
 
@@ -158,8 +169,8 @@ public class Client {
      * Class to send packets to the client socket
      */
     private class ClientSender extends Thread {
-        private BufferedWriter writer; //The writer to send packets with
-        private String data; //The data to send
+        private BufferedOutputStream writer; //The writer to send packets with
+        private byte[] data; //The data to send
 
 
         /***
@@ -167,7 +178,7 @@ public class Client {
          */
         private void init() {
             try {
-                writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+                writer = new BufferedOutputStream(socket.getOutputStream());
             } catch (Exception exc) {
                 exc.printStackTrace();
             }
@@ -178,6 +189,10 @@ public class Client {
          * @param data The data to be sent to the socket
          */
         private void sendMessage(String data) {
+            sendRaw((data + "\n").getBytes());
+        }
+
+        private void sendRaw(byte[] data) {
             if(writer == null) {
                 throw new RuntimeException("ClientSender not initialized");
             }
@@ -188,10 +203,10 @@ public class Client {
         @Override
         public void run() {
             try {
-                System.out.println("Sending data: " + data);
+                System.out.println("Sending data: " + new String(data));
                 writer.write(data);
-                writer.newLine();
                 writer.flush();
+
             } catch (Exception exc) {
                 exc.printStackTrace();
             }

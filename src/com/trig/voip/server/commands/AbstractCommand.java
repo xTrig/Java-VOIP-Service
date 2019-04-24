@@ -1,10 +1,10 @@
-package server.commands;
+package com.trig.voip.server.commands;
 
-import server.Client;
+import com.trig.voip.server.Client;
 
 /***
  * @author Steven
- * Abstract class to define server.commands
+ * Abstract class to define commands
  */
 public abstract class AbstractCommand implements Command {
 

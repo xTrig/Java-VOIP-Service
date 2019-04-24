@@ -1,7 +1,7 @@
-import client.MainGUI;
-import server.VOIPServer;
+package com.trig.voip;
 
-import javax.swing.*;
+import com.trig.voip.client.VOIPClient;
+import com.trig.voip.server.VOIPServer;
 
 public class Main {
 
@@ -32,13 +32,8 @@ public class Main {
         //Otherwise start the client
         System.out.println("Client starting...");
 
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception exc) {
-            exc.printStackTrace();
-        }
+        VOIPClient client = new VOIPClient();
+        client.start();
 
-        MainGUI gui = new MainGUI();
-        gui.setVisible(true);
     }
 }

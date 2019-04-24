@@ -1,6 +1,6 @@
-package server;
+package com.trig.voip.server;
 
-import server.commands.AbstractCommand;
+import com.trig.voip.server.commands.AbstractCommand;
 
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -9,7 +9,7 @@ import java.util.ArrayList;
 /***
  * @author Steven
  *
- * Main VOIPServer class to handle all connections and server.commands
+ * Main VOIPServer class to handle all connections and commands
  */
 public class VOIPServer {
 
@@ -28,7 +28,7 @@ public class VOIPServer {
      * @param port The port number to start the server on
      */
     public void start(int port) {
-        if(running) { //If the server is already running, throw an exception
+        if(running) { //If the cserver is already running, throw an exception
             throw new RuntimeException("Server is already running!");
         }
         this.port = port; //Store the port for later use
