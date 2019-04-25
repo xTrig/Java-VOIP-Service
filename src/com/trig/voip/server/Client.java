@@ -62,6 +62,7 @@ public class Client {
             mic.sendRaw(data);
         } else {
             if(isMicSocket) {
+                System.out.println("Sending voice data " + new String(data));
                 sendRaw(data);
             }
         }
