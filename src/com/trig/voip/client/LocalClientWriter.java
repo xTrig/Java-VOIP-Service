@@ -25,6 +25,9 @@ public class LocalClientWriter extends Thread {
 
     public void sendRaw(byte[] data) {
         this.data = data;
+        if(data.length < 3) { //Don't send data if the length is less than 3 bytes
+            return;
+        }
         run();
     }
 
