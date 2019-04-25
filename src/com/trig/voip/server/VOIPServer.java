@@ -63,6 +63,21 @@ public class VOIPServer {
         cmd.interpret();
     }
 
+    public Client getByPort(int port) {
+        for(Client c : clients) {
+            if(c.getSocket().getPort() == port) {
+                return c;
+            }
+        }
+        return null;
+    }
+
+    public void attach(Client client, Client mic) {
+        clients.remove(mic); //Remove mic from the list of clients
+        client.attachMic(mic);
+        System.out.println("Attached mic socket " + mic + " to " + client);
+    }
+
     /***
      * Destroys the given client and frees up resources
      * @param client The client to destroy
@@ -73,6 +88,20 @@ public class VOIPServer {
         clients.remove(client); //Remove the client from the list
         client = null; //Help with GC
         System.out.println("Connection disposed");
+    }
+
+    /***
+     * Sends voice data received from some client to all connected users
+     * @param client The client that sent this data
+     * @param voiceData The data that was received
+     * @param length The length of the voice data received
+     */
+    public void sendVoice(Client client, byte[] voiceData, int length) {
+        for(Client c : clients) {
+            //For debugging purposes, we'll send the voice data to the original client as well.
+            //We may need the length variable later.
+            c.sendVoice(voiceData);
+        }
     }
 
     /***

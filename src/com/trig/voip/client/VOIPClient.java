@@ -32,6 +32,9 @@ public class VOIPClient {
             }
         });
 
+
+        //Now we wait for the GUI to start up, and then call the ready() interrupt before we continue
+        //so that we can output some data to the GUI
         while(!ready) {
             try {
                 Thread.sleep(100);

@@ -28,6 +28,8 @@ public class CommandResolver {
                 return new HelloCommand(client, data);
             case "02":
                 return new SoundCommand(client, data);
+            case "03":
+                return new AttachMicCommand(client, data);
             case "05":
                 return new VoiceCommand(client, data);
             default:

@@ -9,9 +9,14 @@ import java.net.Socket;
 public class Client {
 
     private Socket socket; //The socket that this Client belongs to
+    private Socket micSocket; //The socket dedicated to transferring voice data
     private String name; //The name of this Client
     private ClientHandler handler; //Class to handle Client Input
     private ClientSender sender; //Class to handle Client output
+
+    //private MicReader micReader; //Class that will handle mic input from the client
+    //private MicWriter micWriter; //Class that will handle voice output to the client
+    private Client mic;
     private VOIPServer server = VOIPServer.getInstance(); //The server instance
 
     /***
@@ -26,6 +31,7 @@ public class Client {
         handler.start();
         sender = new ClientSender();
         sender.init();
+
     }
 
     /***
@@ -35,6 +41,23 @@ public class Client {
     public Client(Socket socket) {
 
         this(socket, "Unknown");
+    }
+
+    /***
+     * Attaches a voice communication socket to this client
+     * @param mic The Client to be used as the voice communication line
+     */
+    public void attachMic(Client mic) {
+        this.mic = mic;
+    }
+
+    public void sendVoice(byte[] data) {
+        if(mic != null) {
+            mic.sendRaw(data);
+        } else {
+            throw new NullPointerException("Client at " + this + " does not have a mic socket attached!");
+        }
+
     }
 
     /***
@@ -204,7 +227,7 @@ public class Client {
         @Override
         public void run() {
             try {
-                System.out.println("Sending data: " + new String(data));
+                //System.out.println("Sending data: " + new String(data));
                 writer.write(data);
                 writer.flush();
 
@@ -212,6 +235,77 @@ public class Client {
                 exc.printStackTrace();
             }
         }
-
     }
+
+//    private class MicReader extends Thread {
+//
+//        private DataInputStream in;
+//        private byte[] micBuffer = new byte[2048];
+//
+//        private void init() {
+//            if(micSocket != null) {
+//                if(!micSocket.isClosed()) {
+//                    try {
+//                        in = new DataInputStream(micSocket.getInputStream());
+//                    } catch (Exception exc) {
+//                        exc.printStackTrace();
+//                        System.out.println("Could not setup mic reader for client " + Client.this.toString());
+//                    }
+//                }
+//            }
+//        }
+//
+//        public void run() {
+//
+//            try {
+//                int length = 0;
+//                while((length = in.read(micBuffer)) != -1) {
+//                    server.sendVoice(Client.this, micBuffer, length);
+//                }
+//
+//                micSocket.close(); //The connection has been closed, so let's make sure the socket is closed and then set it to null
+//                micSocket = null;
+//            } catch (Exception exc) {
+//                exc.printStackTrace();
+//                System.out.println("Mic Buffer failed to read");
+//            }
+//        }
+//    }
+//
+//    private class MicWriter extends Thread {
+//
+//        private DataOutputStream out;
+//        private byte[] data;
+//        private int length;
+//
+//        private void init() {
+//
+//            if(micSocket != null) {
+//                if(!micSocket.isClosed()) {
+//                    try {
+//                        out = new DataOutputStream(micSocket.getOutputStream());
+//                    } catch (Exception exc) {
+//                        exc.printStackTrace();
+//                        System.out.println("Failed to create mic output stream for " + Client.this.toString());
+//                    }
+//
+//                }
+//            }
+//        }
+//
+//        private void sendData(byte[] data, int length) {
+//            this.data = data;
+//            this.length = length;
+//        }
+//
+//        public void run() {
+//            if(out != null) {
+//                try {
+//                    out.write(data, 0, length);
+//                } catch (Exception exc) {
+//                    exc.printStackTrace();
+//                }
+//            }
+//        }
+//    }
 }
