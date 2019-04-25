@@ -111,6 +111,19 @@ public class VOIPClient {
             micWriter = null;
             micTest();
         }
+    }
 
+    public void startRecording() {
+        if(micWriter == null) {
+            micWriter = new LocalMicWriter(this);
+            micWriter.start();
+        }
+    }
+
+    public void stopRecording() {
+        if(micWriter != null) {
+            micWriter.stopRecording();
+            micWriter = null;
+        }
     }
 }

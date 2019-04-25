@@ -4,26 +4,33 @@ import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.TargetDataLine;
-import java.io.ByteArrayOutputStream;
-import java.util.Arrays;
 
 public class LocalMicWriter extends Thread {
 
     private VOIPClient client;
+    private volatile boolean recording = false;
+    private TargetDataLine mic;
 
     public LocalMicWriter(VOIPClient client) {
         this.client = client;
     }
 
     public void dispose() {
+        recording = false;
+        mic.drain();
+        mic.close();
         stop();
         client = null;
     }
 
+    public void stopRecording() {
+        recording = false;
+    }
+
     public void run() {
         client.writeToConsole("Starting mic test");
+        recording = true;
         AudioFormat format = new AudioFormat(8000.0f, 16, 1, true, true);
-        TargetDataLine mic;
         try {
             mic = AudioSystem.getTargetDataLine(format);
 
@@ -39,15 +46,14 @@ public class LocalMicWriter extends Thread {
             int bytesRead = 0;
 
 
-            while(bytesRead < 20000) {
+            while(recording) {
                 numBytesRead = mic.read(data, 0, CHUNK_SIZE);
                 bytesRead += numBytesRead;
                 client.sendVoice(data, numBytesRead);
                 client.writeToConsole(new String(data));
             }
-            mic.drain();
             mic.close();
-            client.writeToConsole("Mic test complete");
+            client.writeToConsole("Mic recording stopped");
         } catch (Exception exc) {
             exc.printStackTrace();
         }

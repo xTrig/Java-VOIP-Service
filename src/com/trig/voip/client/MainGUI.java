@@ -1,19 +1,15 @@
 package com.trig.voip.client;
 
-import javax.sound.sampled.AudioFormat;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.DataLine;
-import javax.sound.sampled.TargetDataLine;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.ByteArrayOutputStream;
 
 public class MainGUI extends JFrame {
     private JPanel root;
     private JTextArea consoleOut;
     private JButton requestSoundButton;
-    private JButton testMicButton;
+    private JButton startRecordingBtn;
+    private JButton stopRecordingBtn;
 
     private VOIPClient client;
 
@@ -40,10 +36,17 @@ public class MainGUI extends JFrame {
             }
         });
 
-        testMicButton.addActionListener(new ActionListener() {
+        startRecordingBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                testMic();
+
+                startRecording();
+            }
+        });
+        stopRecordingBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                stopRecording();
             }
         });
     }
@@ -56,8 +59,11 @@ public class MainGUI extends JFrame {
         });
     }
 
-    private void testMic() {
-        client.micTest();
+    private void startRecording() {
+        client.startRecording();
+    }
 
+    private void stopRecording() {
+        client.stopRecording();
     }
 }

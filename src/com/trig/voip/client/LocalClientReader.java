@@ -42,16 +42,11 @@ public class LocalClientReader extends Thread {
                 while(running) {
                    int count = reader.read(buffer);
                    if(count > 0) {
-                       System.out.println("Playing " + new String(buffer, 0, count));
                        speaker.write(buffer, 0, count);
                    }
                 }
                 speaker.drain();
                 speaker.close();
-//                AudioInputStream is = AudioSystem.getAudioInputStream(new BufferedInputStream(socket.getInputStream()));
-//                Clip clip = AudioSystem.getClip();
-//                clip.open(is);
-//                clip.start();
             } else { //This is regular data
                 while((reader.read(buffer)) != -1) {
                     line = new String(buffer);
