@@ -88,8 +88,8 @@ public class VOIPServer {
 
     public Client getByPort(int port) {
         for(Client c : clients) {
+            System.out.println("Local port: " + c.getSocket().getPort());
             if(c.getSocket().getPort() == port) {
-                System.out.println("Local port: " + c.getSocket().getPort());
                 return c;
             }
         }
