@@ -75,8 +75,10 @@ public class VOIPClient {
     }
 
     public void sendVoice(byte[] data, int count) {
-        String voicePkt = "05 " + new String(data) + "\n";
-        sendRaw(voicePkt.getBytes(), count);
+        String voicePkt = "05 " + new String(data) + '\n';
+        sendRaw(voicePkt.getBytes(), count + 4);
+        System.out.println("Voice packet: " + voicePkt + "\nLength: " + (count + 4));
+
     }
 
     public synchronized void micTest() {

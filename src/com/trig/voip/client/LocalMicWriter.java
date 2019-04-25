@@ -39,22 +39,24 @@ public class LocalMicWriter extends Thread {
 
             int bytesRead = 0;
 
-            while(bytesRead < 25000) {
+            while(bytesRead < 5000) {
                 numBytesRead = mic.read(data, 0, CHUNK_SIZE);
                 bytesRead += numBytesRead;
                 bos.write(data, 0, numBytesRead);
-                int parts = 0;
-                if(data.length > 1000) { //We need to split this, otherwise the MTU will cuck us
-                    parts = (data.length / 1000) + 1;
-                    System.out.println("Splitting voice packet into " + parts + " segments");
-                    for(int i = 0; i < parts; i++) {
-                        byte[] d = Arrays.copyOfRange(data, 999 * i, 999 * (i + 1));
-                        client.sendVoice(d, 999);
-                    }
-                } else {
-                    client.sendVoice(data, numBytesRead);
-                    client.writeToConsole(new String(data));
-                }
+//                int parts = 0;
+//                if(data.length > 1000) { //We need to split this, otherwise the MTU will cuck us
+//                    parts = (data.length / 1000) + 1;
+//                    System.out.println("Splitting voice packet into " + parts + " segments");
+//                    for(int i = 0; i < parts; i++) {
+//                        byte[] d = Arrays.copyOfRange(data, 999 * i, 999 * (i + 1));
+//                        client.sendVoice(d, 999);
+//                    }
+//                } else {
+//                    client.sendVoice(data, numBytesRead);
+//                    client.writeToConsole(new String(data));
+//                }
+                client.sendVoice(data, numBytesRead);
+                client.writeToConsole(new String(data));
             }
             mic.drain();
             mic.close();
