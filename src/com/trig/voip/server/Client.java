@@ -61,7 +61,9 @@ public class Client {
         if(mic != null) {
             mic.sendRaw(data);
         } else {
-            throw new NullPointerException("Client at " + this + " does not have a mic socket attached!");
+            if(isMicSocket) {
+                sendRaw(data);
+            }
         }
 
     }
