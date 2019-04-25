@@ -13,6 +13,10 @@ public class AttachMicCommand extends AbstractCommand {
     protected boolean validate() {
         int port = Integer.parseInt(data); //The data field for this packet will contain the port number of its control socket for verification
         Client c = VOIPServer.getInstance().getByPort(port);
+
+        if(c == null) { //No Client was found with the specified port
+            return false;
+        }
         if(c.getSocket().getInetAddress().equals(client.getSocket().getInetAddress())) { //Verify that the InetAddresses are equal
             return true;
         }

@@ -57,7 +57,11 @@ public class VOIPClient {
             writeToConsole("Starting voice communications link...");
             micSocket = new Socket(HOST, MIC_PORT);
             LocalClient micClient = new LocalClient(this, micSocket);
-            client.attachMic(micClient);
+            if(client.attachMic(micClient)) {
+                writeToConsole("Mic communications link established!");
+            } else {
+                writeToConsole("Mic communications link failed");
+            }
         } catch (Exception exc) {
             exc.printStackTrace();
             writeToConsole("Failed to connect to server!");

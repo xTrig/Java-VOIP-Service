@@ -31,13 +31,16 @@ public class LocalClient {
      * Attaches a LocalClient to this Client for voice communication
      * @param micClient
      */
-    public void attachMic(LocalClient micClient) {
+    public boolean attachMic(LocalClient micClient) {
         if(micClient != null) {
             this.micClient = micClient;
             if(!this.micClient.isInitialized()) {
                 this.micClient.init();
             }
+            this.micClient.sendMessage("03 " + socket.getLocalPort());
+            return true;
         }
+        return false;
     }
 
     public void sendVoice(byte[] data, int length) {
