@@ -57,6 +57,7 @@ public class VOIPClient {
             writeToConsole("Starting voice communications link...");
             micSocket = new Socket(HOST, MIC_PORT);
             LocalClient micClient = new LocalClient(this, micSocket);
+            Thread.sleep(500);
             if(client.attachMic(micClient)) {
                 writeToConsole("Mic communications link established!");
             } else {
