@@ -2,6 +2,7 @@ package com.trig.voip.client;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
+import java.io.DataOutputStream;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.Arrays;
@@ -9,33 +10,27 @@ import java.util.Arrays;
 public class LocalClientWriter extends Thread {
 
     private Socket socket;
-    private BufferedOutputStream writer;
+    private DataOutputStream writer;
     private byte[] data;
+    private int length;
     private VOIPClient client;
 
     public LocalClientWriter(Socket socket, VOIPClient client) {
         this.socket = socket;
         this.client = client;
 
-        init(); //Setup the BufferedOutputStream
+        init(); //Setup the DataOutputStream
     }
 
     public void sendMessage(String data) {
-        sendRaw((data + "\n").getBytes());
+        data = data + "\n";
+        sendRaw(data.getBytes(), data.length());
     }
 
-    public void sendRaw(byte[] data) {
+    public void sendRaw(byte[] data, int length) {
         this.data = data;
-        if(data.length < 3) { //Don't send data if the length is less than 3 bytes
-            return;
-        }
-        if(this.data.length > 1000) {
-            System.out.println("Splitting packet of length " + this.data.length);
-            byte[] d2 = Arrays.copyOfRange(this.data, 1000, this.data.length);
-            this.data = Arrays.copyOfRange(this.data, 0, 999);
-            run();
-            this.data = d2;
-            run();
+        this.length = length;
+        if(length < 3) { //Don't send data if the length is less than 3 bytes
             return;
         }
         run();
@@ -44,7 +39,7 @@ public class LocalClientWriter extends Thread {
 
     private void init() {
         try {
-            writer = new BufferedOutputStream(socket.getOutputStream());
+            writer = new DataOutputStream(socket.getOutputStream());
         } catch (Exception exc) {
             exc.printStackTrace();
         }
@@ -54,7 +49,7 @@ public class LocalClientWriter extends Thread {
     @Override
     public void run() {
         try {
-            writer.write(data);
+            writer.write(data, 0, length);
             writer.flush();
         } catch (Exception exc) {
             exc.printStackTrace();

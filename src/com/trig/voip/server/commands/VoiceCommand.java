@@ -15,6 +15,7 @@ public class VoiceCommand extends AbstractCommand {
 
     @Override
     public void interpret() {
+        data = data.replaceAll("\n", ""); //Strip the newline
         System.out.println("Voice Packet from " + client + ": " + data);
     }
 }

@@ -70,13 +70,13 @@ public class VOIPClient {
         writer.sendMessage(data);
     }
 
-    public void sendRaw(byte[] data) {
-        writer.sendRaw(data);
+    public void sendRaw(byte[] data, int count) {
+        writer.sendRaw(data, count);
     }
 
-    public void sendVoice(byte[] data) {
-        String voicePkt = "05 " + new String(data);
-        sendRaw(voicePkt.getBytes());
+    public void sendVoice(byte[] data, int count) {
+        String voicePkt = "05 " + new String(data) + "\n";
+        sendRaw(voicePkt.getBytes(), count);
     }
 
     public synchronized void micTest() {
