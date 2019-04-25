@@ -10,7 +10,7 @@ public class VOIPClient {
     private Socket micSocket;
     private LocalClient client;
     private volatile boolean ready = false;
-    private static final String HOST = "localhost"; //192.168.1.121
+    private static final String HOST = "198.100.155.22"; //192.168.1.121
     private static final int PORT = 8000;
     private static final int MIC_PORT = 8001;
 

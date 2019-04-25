@@ -62,14 +62,9 @@ public class Client {
 
     public void sendVoice(byte[] data, int length) {
         if(isMicSocket) {
-            System.out.println("Sending voice data " + new String(data));
             sendRaw(data, length);
         } else {
             System.out.println("Not voice socket");
-//            System.out.println("Sending mic data to mic client...");
-//            if (mic != null) {
-//                mic.sendRaw(data);
-//            }
         }
 
     }
@@ -179,7 +174,6 @@ public class Client {
                 while((count = reader.read(buffer)) != -1) { //While the socket is still valid
                     line = new String(buffer, 0, count);
                     if(!isMicSocket) {
-                        //System.out.println("Received data: " + line);
                         AbstractCommand cmd = CommandResolver.resolve(Client.this, line); //Resolve this command
                         if(cmd == null) {
                             continue;
@@ -252,7 +246,6 @@ public class Client {
         @Override
         public void run() {
             try {
-                //System.out.println("Sending data: " + new String(data));
                 writer.write(data, 0, length);
                 writer.flush();
 
@@ -261,76 +254,4 @@ public class Client {
             }
         }
     }
-
-//    private class MicReader extends Thread {
-//
-//        private DataInputStream in;
-//        private byte[] micBuffer = new byte[2048];
-//
-//        private void init() {
-//            if(micSocket != null) {
-//                if(!micSocket.isClosed()) {
-//                    try {
-//                        in = new DataInputStream(micSocket.getInputStream());
-//                    } catch (Exception exc) {
-//                        exc.printStackTrace();
-//                        System.out.println("Could not setup mic reader for client " + Client.this.toString());
-//                    }
-//                }
-//            }
-//        }
-//
-//        public void run() {
-//
-//            try {
-//                int length = 0;
-//                while((length = in.read(micBuffer)) != -1) {
-//                    server.sendVoice(Client.this, micBuffer, length);
-//                }
-//
-//                micSocket.close(); //The connection has been closed, so let's make sure the socket is closed and then set it to null
-//                micSocket = null;
-//            } catch (Exception exc) {
-//                exc.printStackTrace();
-//                System.out.println("Mic Buffer failed to read");
-//            }
-//        }
-//    }
-//
-//    private class MicWriter extends Thread {
-//
-//        private DataOutputStream out;
-//        private byte[] data;
-//        private int length;
-//
-//        private void init() {
-//
-//            if(micSocket != null) {
-//                if(!micSocket.isClosed()) {
-//                    try {
-//                        out = new DataOutputStream(micSocket.getOutputStream());
-//                    } catch (Exception exc) {
-//                        exc.printStackTrace();
-//                        System.out.println("Failed to create mic output stream for " + Client.this.toString());
-//                    }
-//
-//                }
-//            }
-//        }
-//
-//        private void sendData(byte[] data, int length) {
-//            this.data = data;
-//            this.length = length;
-//        }
-//
-//        public void run() {
-//            if(out != null) {
-//                try {
-//                    out.write(data, 0, length);
-//                } catch (Exception exc) {
-//                    exc.printStackTrace();
-//                }
-//            }
-//        }
-//    }
 }

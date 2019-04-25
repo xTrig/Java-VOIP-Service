@@ -109,6 +109,7 @@ public class VOIPServer {
      */
     public void dispose(Client client) {
         System.out.println("Closing connection with " + client);
+        client.getMic().dispose();
         client.dispose(); //Call dispose on the client so it can handle its own garbage
         clients.remove(client); //Remove the client from the list
         client = null; //Help with GC
