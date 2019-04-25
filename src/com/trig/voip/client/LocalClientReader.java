@@ -37,9 +37,12 @@ public class LocalClientReader extends Thread {
                 SourceDataLine speaker = (SourceDataLine) AudioSystem.getLine(speakerInfo);
                 speaker.open(format);
                 buffer = new byte[speaker.getBufferSize() / 5];
+
+                speaker.start();
                 while(running) {
                    int count = reader.read(buffer);
                    if(count > 0) {
+                       System.out.println("Playing " + new String(buffer, 0, count));
                        speaker.write(buffer, 0, count);
                    }
                 }

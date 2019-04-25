@@ -179,16 +179,14 @@ public class Client {
                 while((count = reader.read(buffer)) != -1) { //While the socket is still valid
                     line = new String(buffer, 0, count);
                     if(!isMicSocket) {
-                        System.out.println("Received data: " + line);
+                        //System.out.println("Received data: " + line);
                         AbstractCommand cmd = CommandResolver.resolve(Client.this, line); //Resolve this command
                         if(cmd == null) {
                             continue;
                         }
                         server.acceptCommand(cmd); //Execute the command
                     } else {
-                        System.out.println("Received voice data: " + line);
-                        byte[] voiceData = line.getBytes();
-                        server.sendVoice(Client.this, voiceData, voiceData.length);
+                        server.sendVoice(Client.this, buffer, count);
                     }
 
                 }

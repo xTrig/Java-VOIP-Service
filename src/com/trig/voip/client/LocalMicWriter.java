@@ -38,6 +38,7 @@ public class LocalMicWriter extends Thread {
 
             int bytesRead = 0;
 
+
             while(bytesRead < 20000) {
                 numBytesRead = mic.read(data, 0, CHUNK_SIZE);
                 bytesRead += numBytesRead;

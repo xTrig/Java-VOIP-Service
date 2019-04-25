@@ -98,6 +98,10 @@ public class VOIPClient {
 
     }
 
+    public LocalClient getClient() {
+        return client;
+    }
+
     public synchronized void micTest() {
         if(micWriter == null) {
             micWriter = new LocalMicWriter(this);
