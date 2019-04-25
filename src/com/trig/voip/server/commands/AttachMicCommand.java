@@ -15,6 +15,7 @@ public class AttachMicCommand extends AbstractCommand {
         Client c = VOIPServer.getInstance().getByPort(port);
 
         if(c == null) { //No Client was found with the specified port
+            System.out.println("No client found with port " + port + " to attach mic");
             return false;
         }
         if(c.getSocket().getInetAddress().equals(client.getSocket().getInetAddress())) { //Verify that the InetAddresses are equal
@@ -28,8 +29,6 @@ public class AttachMicCommand extends AbstractCommand {
         if(validate()) {
             Client c = VOIPServer.getInstance().getByPort(Integer.parseInt(data));
             VOIPServer.getInstance().attach(c, client);
-        } else {
-            System.out.println("Received invalid AttachMicCommand : Sender=" + client);
         }
     }
 }
