@@ -1,14 +1,10 @@
 package com.trig.voip.client;
 
-import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.Socket;
 
-public class LocalClientReader implements Runnable {
+public class LocalClientReader extends Thread {
 
     private Socket socket;
     private BufferedReader reader;

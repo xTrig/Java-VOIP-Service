@@ -1,11 +1,7 @@
 package com.trig.voip.client;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
 import java.io.DataOutputStream;
-import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.util.Arrays;
 
 public class LocalClientWriter extends Thread {
 

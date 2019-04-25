@@ -7,9 +7,12 @@ public class VOIPClient {
 
     private MainGUI gui;
     private Socket socket;
-    private LocalClientWriter writer;
-    private LocalClientReader reader;
+    private Socket micSocket;
+    private LocalClient client;
     private volatile boolean ready = false;
+    private static final String HOST = "192.168.1.121";
+    private static final int PORT = 8000;
+    private static final int MIC_PORT = 8001;
 
     private LocalMicWriter micWriter;
 
@@ -45,13 +48,16 @@ public class VOIPClient {
         writeToConsole("Connecting to server...");
         System.out.println("Connecting to server...");
         try {
-            socket = new Socket("192.168.1.121", 8000);
-            reader = new LocalClientReader(socket, this);
-            writer = new LocalClientWriter(socket, this);
-            Thread readerThread = new Thread(reader);
-            readerThread.start();
+            socket = new Socket(HOST, PORT);
+            client = new LocalClient(this, socket);
+            client.init();
             writeToConsole("Connected to server!");
-
+            sendMessage("01 Client"); //ID this socket as the client
+            writeToConsole("ID packet sent!");
+            writeToConsole("Starting voice communications link...");
+            micSocket = new Socket(HOST, MIC_PORT);
+            LocalClient micClient = new LocalClient(this, micSocket);
+            client.attachMic(micClient);
         } catch (Exception exc) {
             exc.printStackTrace();
             writeToConsole("Failed to connect to server!");
@@ -70,17 +76,19 @@ public class VOIPClient {
 
     public void sendMessage(String data) {
 
-        writer.sendMessage(data);
+        client.sendMessage(data);
     }
 
     public void sendRaw(byte[] data, int count) {
-        writer.sendRaw(data, count);
+
+        client.sendRaw(data, count);
     }
 
     public void sendVoice(byte[] data, int count) {
-        String voicePkt = "05 " + new String(data) + '\n';
-        sendRaw(voicePkt.getBytes(), count + 4);
-        System.out.println("Voice packet: " + voicePkt + "\nLength: " + (count + 4));
+        client.sendVoice(data, count);
+//        String voicePkt = "05 " + new String(data) + '\n';
+//        sendRaw(voicePkt.getBytes(), count + 4);
+//        System.out.println("Voice packet: " + voicePkt + "\nLength: " + (count + 4));
 
     }
 

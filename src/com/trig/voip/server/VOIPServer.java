@@ -15,6 +15,7 @@ public class VOIPServer {
 
     private int port; //The port number the server will run on
     private ServerSocket server; //The ServerSocket to accept connections with
+    private ServerSocket voiceServer; //The ServerSocket to handle voice communications
     private boolean running = false; //Whether or not the server is currently running
     private static VOIPServer instance; //The Singleton instance
 
@@ -28,7 +29,7 @@ public class VOIPServer {
      * @param port The port number to start the server on
      */
     public void start(int port) {
-        if(running) { //If the cserver is already running, throw an exception
+        if(running) { //If the server is already running, throw an exception
             throw new RuntimeException("Server is already running!");
         }
         this.port = port; //Store the port for later use
@@ -37,21 +38,43 @@ public class VOIPServer {
         //Start creating the server socket
         try {
             server = new ServerSocket(port);
+            voiceServer = new ServerSocket(port + 1); //Add 1 to the original port number.
             System.out.println("Listening on port: " + port);
         } catch (Exception exc) {
             exc.printStackTrace();
         }
         running = true; //Set the running flag to true
         //We will accept incoming connections on the main thread
-        while(running) {
-            try {
-                Socket socket = server.accept(); //Accept all connections
-                Client client = new Client(socket); //Create a Client with the socket and default name
-                System.out.println("Connection started with " + client.getConnectionInfo());
-            } catch (Exception exc) {
-                exc.printStackTrace();
+        Thread mainServerThread = new Thread() {
+            public void run() {
+                while(running) {
+                    try {
+                        Socket socket = server.accept(); //Accept all connections
+                        Client client = new Client(socket); //Create a Client with the socket and default name
+                        System.out.println("Connection started with " + client.getConnectionInfo());
+                    } catch (Exception exc) {
+                        exc.printStackTrace();
+                    }
+                }
             }
-        }
+        };
+
+        Thread voiceServerThread = new Thread() {
+            public void run() {
+                while(running) {
+                    try {
+                        Socket socket = voiceServer.accept(); //Accept all connections
+                        Client client = new Client(socket); //Create a Client with the socket and default name
+                        System.out.println("Connection started with " + client.getConnectionInfo());
+                    } catch (Exception exc) {
+                        exc.printStackTrace();
+                    }
+                }
+            }
+        };
+
+        mainServerThread.start();
+        voiceServerThread.start();
     }
 
     /***
