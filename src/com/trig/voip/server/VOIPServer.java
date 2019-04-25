@@ -52,6 +52,7 @@ public class VOIPServer {
                         Socket socket = server.accept(); //Accept all connections
                         Client client = new Client(socket); //Create a Client with the socket and default name
                         System.out.println("Connection started with " + client.getConnectionInfo());
+                        clients.add(client);
                     } catch (Exception exc) {
                         exc.printStackTrace();
                     }
@@ -66,6 +67,7 @@ public class VOIPServer {
                         Socket socket = voiceServer.accept(); //Accept all connections
                         Client client = new Client(socket); //Create a Client with the socket and default name
                         System.out.println("Connection started with " + client.getConnectionInfo());
+                        clients.add(client);
                     } catch (Exception exc) {
                         exc.printStackTrace();
                     }
@@ -88,7 +90,6 @@ public class VOIPServer {
 
     public Client getByPort(int port) {
         for(Client c : clients) {
-            System.out.println("Local port: " + c.getSocket().getPort());
             if(c.getSocket().getPort() == port) {
                 return c;
             }
