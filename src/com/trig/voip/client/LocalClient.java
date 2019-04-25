@@ -37,6 +37,7 @@ public class LocalClient {
             if(!this.micClient.isInitialized()) {
                 this.micClient.init();
             }
+            System.out.println("Attempting to attach mic to port " + socket.getLocalPort());
             this.micClient.sendMessage("03 " + socket.getLocalPort());
             return true;
         }
