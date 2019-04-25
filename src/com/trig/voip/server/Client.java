@@ -10,6 +10,7 @@ public class Client {
 
     private Socket socket; //The socket that this Client belongs to
     private Socket micSocket; //The socket dedicated to transferring voice data
+    private boolean isMicSocket = false;
     private String name; //The name of this Client
     private ClientHandler handler; //Class to handle Client Input
     private ClientSender sender; //Class to handle Client output
@@ -43,12 +44,17 @@ public class Client {
         this(socket, "Unknown");
     }
 
+    private void setMicSocket(boolean isMicSocket) {
+        this.isMicSocket = isMicSocket;
+    }
+
     /***
      * Attaches a voice communication socket to this client
      * @param mic The Client to be used as the voice communication line
      */
     public void attachMic(Client mic) {
         this.mic = mic;
+        this.mic.setMicSocket(true);
     }
 
     public void sendVoice(byte[] data) {
@@ -160,13 +166,22 @@ public class Client {
             String line; //The line that will be received from transport layer
 
             try {
+
                 while((line = reader.readLine()) != null) { //While the socket is still valid
-                    System.out.println("Received data: " + line);
-                    AbstractCommand cmd = CommandResolver.resolve(Client.this, line); //Resolve this command
-                    if(cmd == null) {
-                        continue;
+
+                    if(!isMicSocket) {
+                        System.out.println("Received data: " + line);
+                        AbstractCommand cmd = CommandResolver.resolve(Client.this, line); //Resolve this command
+                        if(cmd == null) {
+                            continue;
+                        }
+                        server.acceptCommand(cmd); //Execute the command
+                    } else {
+                        System.out.println("Received voice data: " + line);
+                        byte[] voiceData = line.getBytes();
+                        server.sendVoice(Client.this, voiceData, voiceData.length);
                     }
-                    server.acceptCommand(cmd); //Execute the command
+
                 }
 
                 server.dispose(Client.this); //The socket connection has ended, dispose of this object
