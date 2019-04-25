@@ -42,7 +42,7 @@ public class VOIPClient {
         writeToConsole("Connecting to server...");
         System.out.println("Connecting to server...");
         try {
-            socket = new Socket("localhost", 8000);
+            socket = new Socket("192.168.1.121", 8000);
             reader = new LocalClientReader(socket, this);
             writer = new LocalClientWriter(socket, this);
             Thread readerThread = new Thread(reader);
@@ -75,7 +75,7 @@ public class VOIPClient {
     }
 
     public void sendVoice(byte[] data) {
-        String voicePkt = "03 " + new String(data);
+        String voicePkt = "05 " + new String(data);
         sendRaw(voicePkt.getBytes());
     }
 

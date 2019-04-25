@@ -4,6 +4,7 @@ import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.Arrays;
 
 public class LocalClientWriter extends Thread {
 
@@ -28,7 +29,17 @@ public class LocalClientWriter extends Thread {
         if(data.length < 3) { //Don't send data if the length is less than 3 bytes
             return;
         }
+        if(this.data.length > 1000) {
+            System.out.println("Splitting packet of length " + this.data.length);
+            byte[] d2 = Arrays.copyOfRange(this.data, 1000, this.data.length);
+            this.data = Arrays.copyOfRange(this.data, 0, 999);
+            run();
+            this.data = d2;
+            run();
+            return;
+        }
         run();
+
     }
 
     private void init() {

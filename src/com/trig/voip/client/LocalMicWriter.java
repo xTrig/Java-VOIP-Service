@@ -42,7 +42,7 @@ public class LocalMicWriter extends Thread {
                 numBytesRead = mic.read(data, 0, CHUNK_SIZE);
                 bytesRead += numBytesRead;
                 bos.write(data, 0, numBytesRead);
-                client.sendRaw(data);
+                client.sendVoice(data);
                 client.writeToConsole(new String(data));
             }
             mic.close();
