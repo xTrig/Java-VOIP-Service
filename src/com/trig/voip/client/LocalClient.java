@@ -9,22 +9,28 @@ public class LocalClient {
     private LocalClientReader reader;
     private LocalClientWriter writer;
     private VOIPClient voip;
+    private boolean isVoiceClient = false;
     private boolean initialized = false;
 
-    public LocalClient(VOIPClient voip, Socket socket) {
+    public LocalClient(VOIPClient voip, Socket socket, boolean isVoiceClient) {
         this.voip = voip;
         this.socket = socket;
+        this.isVoiceClient = isVoiceClient;
     }
 
     public void init() {
         if(!initialized) {
-            reader = new LocalClientReader(socket, voip);
+            reader = new LocalClientReader(socket, voip, isVoiceClient);
             writer = new LocalClientWriter(socket, voip);
             reader.start();
             initialized = true;
         } else {
             throw new RuntimeException("Client already initialized!");
         }
+    }
+
+    public LocalClient getMicClient() {
+        return micClient;
     }
 
     /***
@@ -45,10 +51,10 @@ public class LocalClient {
     }
 
     public void sendVoice(byte[] data, int length) {
-        if(micClient != null) {
-            micClient.sendRaw(data, length);
+        if(isVoiceClient) {
+            sendRaw(data, length);
         } else {
-            throw new NullPointerException("No Mic Client - perhaps you are already operating on the mic client?");
+            System.out.println("Not voice client");
         }
 
     }

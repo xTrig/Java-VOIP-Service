@@ -98,8 +98,8 @@ public class VOIPServer {
     }
 
     public void attach(Client client, Client mic) {
-        clients.remove(mic); //Remove mic from the list of clients
         client.attachMic(mic);
+        clients.remove(mic); //Remove mic from the list of clients
         System.out.println("Attached mic socket " + mic + " to " + client);
     }
 
@@ -125,7 +125,7 @@ public class VOIPServer {
         for(Client c : clients) {
             //For debugging purposes, we'll send the voice data to the original client as well.
             //We may need the length variable later.
-            c.sendVoice(voiceData);
+            c.getMic().sendVoice(voiceData, length);
         }
     }
 

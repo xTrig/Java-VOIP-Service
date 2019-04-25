@@ -11,6 +11,7 @@ public class AttachMicCommand extends AbstractCommand {
 
     @Override
     protected boolean validate() {
+        data = data.replaceAll("\n", "");
         int port = Integer.parseInt(data); //The data field for this packet will contain the port number of its control socket for verification
         Client c = VOIPServer.getInstance().getByPort(port);
 

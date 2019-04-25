@@ -22,7 +22,7 @@ public class SoundCommand extends AbstractCommand {
         final byte[] audio;
         try {
             audio = Files.readAllBytes(Paths.get(Main.class.getClassLoader().getResource("sound.wav").toURI()));
-            client.sendRaw(audio);
+            client.sendRaw(audio, audio.length);
             System.out.println("Sending audio file: " + new String(audio));
         } catch (Exception exc) {
             exc.printStackTrace();

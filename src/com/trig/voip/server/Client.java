@@ -9,7 +9,6 @@ import java.net.Socket;
 public class Client {
 
     private Socket socket; //The socket that this Client belongs to
-    private Socket micSocket; //The socket dedicated to transferring voice data
     private boolean isMicSocket = false;
     private String name; //The name of this Client
     private ClientHandler handler; //Class to handle Client Input
@@ -57,14 +56,20 @@ public class Client {
         this.mic.setMicSocket(true);
     }
 
-    public void sendVoice(byte[] data) {
-        if(mic != null) {
-            mic.sendRaw(data);
+    public Client getMic() {
+        return mic;
+    }
+
+    public void sendVoice(byte[] data, int length) {
+        if(isMicSocket) {
+            System.out.println("Sending voice data " + new String(data));
+            sendRaw(data, length);
         } else {
-            if(isMicSocket) {
-                System.out.println("Sending voice data " + new String(data));
-                sendRaw(data);
-            }
+            System.out.println("Not voice socket");
+//            System.out.println("Sending mic data to mic client...");
+//            if (mic != null) {
+//                mic.sendRaw(data);
+//            }
         }
 
     }
@@ -82,8 +87,8 @@ public class Client {
      * Sends a raw byte[] to the client
      * @param data The data to be sent
      */
-    public void sendRaw(byte[] data) {
-        sender.sendRaw(data);
+    public void sendRaw(byte[] data, int length) {
+        sender.sendRaw(data, length);
     }
 
     /***
@@ -151,13 +156,13 @@ public class Client {
      */
     private class ClientHandler extends Thread {
 
-        private BufferedReader reader; //The reader to read the inputstream
+        private DataInputStream reader; //The reader to read the inputstream
 
 
         @Override
         public void run() {
             try {
-                reader = new BufferedReader(new InputStreamReader(socket.getInputStream())); //Setup the reader
+                reader = new DataInputStream(socket.getInputStream()); //Setup the reader
 
             } catch (Exception exc) {
                 exc.printStackTrace();
@@ -166,12 +171,13 @@ public class Client {
                 terminate();
             }
 
+            byte[] buffer = new byte[2048];
             String line; //The line that will be received from transport layer
 
             try {
-
-                while((line = reader.readLine()) != null) { //While the socket is still valid
-
+                int count;
+                while((count = reader.read(buffer)) != -1) { //While the socket is still valid
+                    line = new String(buffer, 0, count);
                     if(!isMicSocket) {
                         System.out.println("Received data: " + line);
                         AbstractCommand cmd = CommandResolver.resolve(Client.this, line); //Resolve this command
@@ -210,8 +216,9 @@ public class Client {
      * Class to send packets to the client socket
      */
     private class ClientSender extends Thread {
-        private BufferedOutputStream writer; //The writer to send packets with
+        private DataOutputStream writer; //The writer to send packets with
         private byte[] data; //The data to send
+        private int length;
 
 
         /***
@@ -219,7 +226,7 @@ public class Client {
          */
         private void init() {
             try {
-                writer = new BufferedOutputStream(socket.getOutputStream());
+                writer = new DataOutputStream(socket.getOutputStream());
             } catch (Exception exc) {
                 exc.printStackTrace();
             }
@@ -230,15 +237,17 @@ public class Client {
          * @param data The data to be sent to the socket
          */
         private void sendMessage(String data) {
+            data = data + "\n";
 
-            sendRaw((data + "\n").getBytes());
+            sendRaw(data.getBytes(), data.length());
         }
 
-        private void sendRaw(byte[] data) {
+        private void sendRaw(byte[] data, int length) {
             if(writer == null) {
                 throw new RuntimeException("ClientSender not initialized");
             }
             this.data = data;
+            this.length = length;
             run();
         }
 
@@ -246,7 +255,7 @@ public class Client {
         public void run() {
             try {
                 //System.out.println("Sending data: " + new String(data));
-                writer.write(data);
+                writer.write(data, 0, length);
                 writer.flush();
 
             } catch (Exception exc) {

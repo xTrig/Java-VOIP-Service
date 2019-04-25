@@ -10,7 +10,7 @@ public class VOIPClient {
     private Socket micSocket;
     private LocalClient client;
     private volatile boolean ready = false;
-    private static final String HOST = "192.168.1.121";
+    private static final String HOST = "localhost"; //192.168.1.121
     private static final int PORT = 8000;
     private static final int MIC_PORT = 8001;
 
@@ -49,14 +49,15 @@ public class VOIPClient {
         System.out.println("Connecting to server...");
         try {
             socket = new Socket(HOST, PORT);
-            client = new LocalClient(this, socket);
+            client = new LocalClient(this, socket, false);
             client.init();
             writeToConsole("Connected to server!");
             sendMessage("01 Client"); //ID this socket as the client
             writeToConsole("ID packet sent!");
             writeToConsole("Starting voice communications link...");
             micSocket = new Socket(HOST, MIC_PORT);
-            LocalClient micClient = new LocalClient(this, micSocket);
+            LocalClient micClient = new LocalClient(this, micSocket, true);
+            micClient.init();
             Thread.sleep(500);
             if(client.attachMic(micClient)) {
                 writeToConsole("Mic communications link established!");
@@ -90,7 +91,7 @@ public class VOIPClient {
     }
 
     public void sendVoice(byte[] data, int count) {
-        client.sendVoice(data, count);
+        client.getMicClient().sendVoice(data, count);
 //        String voicePkt = "05 " + new String(data) + '\n';
 //        sendRaw(voicePkt.getBytes(), count + 4);
 //        System.out.println("Voice packet: " + voicePkt + "\nLength: " + (count + 4));
