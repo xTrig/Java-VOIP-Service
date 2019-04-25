@@ -189,6 +189,7 @@ public class Client {
          * @param data The data to be sent to the socket
          */
         private void sendMessage(String data) {
+
             sendRaw((data + "\n").getBytes());
         }
 

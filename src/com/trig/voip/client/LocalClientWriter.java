@@ -1,5 +1,6 @@
 package com.trig.voip.client;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
@@ -7,25 +8,29 @@ import java.net.Socket;
 public class LocalClientWriter extends Thread {
 
     private Socket socket;
-    private BufferedWriter writer;
-    private String data;
+    private BufferedOutputStream writer;
+    private byte[] data;
     private VOIPClient client;
 
     public LocalClientWriter(Socket socket, VOIPClient client) {
         this.socket = socket;
         this.client = client;
 
-        init(); //Setup the BufferedWriter
+        init(); //Setup the BufferedOutputStream
     }
 
     public void sendMessage(String data) {
+        sendRaw((data + "\n").getBytes());
+    }
+
+    public void sendRaw(byte[] data) {
         this.data = data;
         run();
     }
 
     private void init() {
         try {
-            writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            writer = new BufferedOutputStream(socket.getOutputStream());
         } catch (Exception exc) {
             exc.printStackTrace();
         }
@@ -36,7 +41,6 @@ public class LocalClientWriter extends Thread {
     public void run() {
         try {
             writer.write(data);
-            writer.newLine();
             writer.flush();
         } catch (Exception exc) {
             exc.printStackTrace();

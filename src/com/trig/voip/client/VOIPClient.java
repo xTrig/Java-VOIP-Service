@@ -11,6 +11,8 @@ public class VOIPClient {
     private LocalClientReader reader;
     private volatile boolean ready = false;
 
+    private LocalMicWriter micWriter;
+
     public void start() {
         //Setup the look and feel
         try {
@@ -55,6 +57,7 @@ public class VOIPClient {
     }
 
     public void writeToConsole(String msg) {
+
         gui.writeToConsole(msg);
     }
 
@@ -63,6 +66,28 @@ public class VOIPClient {
     }
 
     public void sendMessage(String data) {
+
         writer.sendMessage(data);
+    }
+
+    public void sendRaw(byte[] data) {
+        writer.sendRaw(data);
+    }
+
+    public void sendVoice(byte[] data) {
+        String voicePkt = "03 " + new String(data);
+        sendRaw(voicePkt.getBytes());
+    }
+
+    public synchronized void micTest() {
+        if(micWriter == null) {
+            micWriter = new LocalMicWriter(this);
+            micWriter.start();
+        } else {
+            micWriter.dispose();
+            micWriter = null;
+            micTest();
+        }
+
     }
 }

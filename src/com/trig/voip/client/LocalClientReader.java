@@ -26,10 +26,12 @@ public class LocalClientReader implements Runnable {
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
             String line;
-            AudioInputStream is = AudioSystem.getAudioInputStream(new BufferedInputStream(socket.getInputStream()));
-            Clip clip = AudioSystem.getClip();
-            clip.open(is);
-            clip.start();
+//            AudioInputStream is = AudioSystem.getAudioInputStream(new BufferedInputStream(socket.getInputStream()));
+//            Clip clip = AudioSystem.getClip();
+//            clip.open(is);
+//            clip.start();
+
+            //TODO strip packet header from packet, turn the rest of the line into a byte[] and play it via Clip.open()
 
             while((line = reader.readLine()) != null) {
                 client.writeToConsole("PACKET: " + line);
